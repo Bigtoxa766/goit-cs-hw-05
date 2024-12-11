@@ -1,7 +1,7 @@
 from colorama import Fore
 import argparse
 from aiofiles.ospath import isdir
-from aiofiles.os import makedirs, scandir
+from aiofiles.os import makedirs
 import aiofiles
 import asyncio
 import os
@@ -35,7 +35,7 @@ async def read_folder(source_dir, target_dir):
 
     for el in os.scandir(source_dir):
         if el.is_dir():
-            print(f'Опрацьовую директорію: {el}')
+            print(Fore.BLUE + f'Опрацьовую директорію: {el}')
             await read_folder(el.path, target_dir)
         else:
             await copy_file(el.path, target_dir)
@@ -61,7 +61,7 @@ async def copy_file(source_file, target_dir):
     async with aiofiles.open(source_file, mode='rb') as src, aiofiles.open(target_file, mode='wb') as dst:
         while chunk := await src.read(1024*1024): 
             await dst.write(chunk)
-    print(f"Файл {source_file} скопійовано в {target_file}")
+    print(Fore.GREEN + f"Файл {source_file} скопійовано в {target_file}")
 
 async def main():
     args = pars_args()
@@ -69,8 +69,8 @@ async def main():
     try:
         source_path, target_path = await init_path(args.source, args.target)
         await read_folder(source_path, target_path)
-        print(Fore.BLUE + f"Вихідна директорія: {source_path}")
-        print(Fore.GREEN + f"Цільова директорія: {target_path}")
+        print(Fore.YELLOW + f"Вихідна директорія: {source_path}")
+        print(Fore.YELLOW + f"Цільова директорія: {target_path}")
     except Exception as e:
         print(f"Помилка: {e}")
 
